@@ -116,7 +116,7 @@ def remove_outliers(df):
     a4['LOWYTM']=a2['AYTM']-2*a3['StdYTM']
     return a4
 
-for pr in ['Anhui','Beijing','Fujian','Gansu','Guangdong','Guangxi','Guizhou','Hainan','Hebei','Henan','Heilongjiang','Hubei','Hunan','Jilin','Jiangsu','Jiangxi','Liaoning','Neimenggu','Ningxia','Qinghai','Shandong','Shaanxi','Shanxi','Shanghai','Sichuan','Tianjin','Xizang','Xinjiang','Yunan','Zhejiang','Chongqing']:
+for pr in ['Anhui','Beijing','Fujian','Gansu','Guangdong','Guangxi','Guizhou','Hainan','Hebei','Henan','Heilongjiang','Hubei','Hunan','Jilin','Jiangsu','Jiangxi','Liaoning','Neimenggu','Ningxia','Qinghai','Shandong','Shaanxi','Shanxi','Shanghai','Sichuan','Tianjin','Xizang','Xinjiang','Yunnan','Zhejiang','Chongqing']:
     df = pd.read_csv("{}.csv".format(pr))
     df['Date'] = pd.to_datetime(df['Date'])
     # 0<YTM<0.05
