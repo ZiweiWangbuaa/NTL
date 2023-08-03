@@ -1,0 +1,238 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(tvpfft)
+library(tvpgevd)
+library(tvvardy)
+library(ggplot2)
+library(gridExtra)
+```
+
+
+```{r}
+a = rbind(c(0,.7775172 ,  -24.31104 ,  3.569711 ,.1516473,   23.75606,-2.355208 ),
+          c(0, .0001275,  1.04828  ,   .038225 , -.0000176,    -.0913995, -.0291233  ),
+          c(0,  .0004459,   .2305293 ,   .9371574 ,-.0002589,  -.0407886  , -.1303825))
+```
+
+```{r}
+Sigma = rbind(c( 241.10989, .02129701,  .00488501),
+              c( .02129701, .00300737,  .00076622 ),
+              c( .00488501, .00076622,  .02982685))
+```
+
+
+```{r}
+df=data.frame(t(c(1,1,1)))
+colnames(df)=c("c_brdf_r","y10","y1")
+fit = list()
+fit$Beta.postmean=array(dim =c(3,7,1))
+fit$H.postmean=array(dim =c(3,3,1))
+```
+
+```{r}
+fit$Beta.postmean[,,1]=a
+fit$H.postmean[,,1]=Sigma
+fit$M=3
+```
+
+```{r}
+rr = tvp.girf(fit, 10, df)
+```
+
+```{r}
+dd = data.frame(matrix(NA,10,3))
+   dd[,1] = c(1,2,3,4,5,6,7,8,9,10)
+   dd[,2] = as.vector(rr[,,1][,'shock of c_brdf_r on y10'])
+   dd[,3] = as.vector(rr[,,1][,'shock of c_brdf_r on y1'])
+   colnames(dd) = c('f','response_y10','response_y1')
+
+```
+
+
+```{r}
+aa = list()
+aa[[1]]=ggplot() + 
+  geom_line(data = dd,aes(x = f,y = response_y10,color ="response_y10"),size=1)+ 
+  geom_line(data = dd,aes(x = f,y = response_y1,color="response_y1"),size=1) + 
+  geom_point(data = dd,aes(x = f,y = response_y10,shape ="response_y10"),size=2)+ 
+  geom_point(data = dd,aes(x = f,y = response_y1,shape="response_y1"),size=2) + 
+  theme_bw()+
+  theme(plot.subtitle= element_text(size=17),
+        axis.text.x = element_text(angle = 0, size = 14,hjust = 1),
+        axis.text.y = element_text(angle = 0, size = 14,hjust = 1)) +
+  labs(x='',y='',subtitle='')
+aa[[1]]
+```
+```{r}
+rr
+```
+
+
+```{r}
+tvp.gevd(fit, 37, df)
+```
+
+```{r}
+tvp.gevd.fft(fit, df, c(pi+0.00001,pi/12,0),37)
+```
+
+
+
+
+
+
+
+```{r}
+a = rbind(c(0, .5900061 ,  -12.34226  ,  1.359089 ,.255019,   2.027479,  -.9099223 ),
+          c(0,   -.0000178, 1.054122,   .0366637  ,  -.0000277,    -.1174284 ,  -.0266825),
+          c(0,  .0012229,   .1840313 ,    .9347174 ,  -.0004393 ,   .0014815,  -.1331402 ))
+```
+
+```{r}
+Sigma = rbind(c(72.018204,  -.00318017, -.01350266),
+              c(  -.00318017, .00296738, .00070443 ),
+              c( -.01350266, .00070443, .02983477))
+```
+
+
+```{r}
+df=data.frame(t(c(1,1,1)))
+colnames(df)=c("r_brdf_r","y10","y1")
+fit = list()
+fit$Beta.postmean=array(dim =c(3,7,1))
+fit$H.postmean=array(dim =c(3,3,1))
+```
+
+```{r}
+fit$Beta.postmean[,,1]=a
+fit$H.postmean[,,1]=Sigma
+fit$M=3
+```
+
+```{r}
+rr = tvp.girf(fit, 10, df)
+```
+
+```{r}
+dd = data.frame(matrix(NA,10,3))
+   dd[,1] = c(1,2,3,4,5,6,7,8,9,10)
+   dd[,2] = as.vector(rr[,,1][,'shock of r_brdf_r on y10'])
+   dd[,3] = as.vector(rr[,,1][,'shock of r_brdf_r on y1'])
+   colnames(dd) = c('f','response_y10','response_y1')
+
+```
+
+
+```{r}
+aa = list()
+aa[[1]]=ggplot() + 
+  geom_line(data = dd,aes(x = f,y = response_y10,color ="response_y10"),size=1)+ 
+  geom_line(data = dd,aes(x = f,y = response_y1,color="response_y1"),size=1) + 
+  geom_point(data = dd,aes(x = f,y = response_y10,shape ="response_y10"),size=2)+ 
+  geom_point(data = dd,aes(x = f,y = response_y1,shape="response_y1"),size=2) + 
+  theme_bw()+
+  theme(plot.subtitle= element_text(size=17),
+        axis.text.x = element_text(angle = 0, size = 14,hjust = 1),
+        axis.text.y = element_text(angle = 0, size = 14,hjust = 1)) +
+  labs(x='',y='',subtitle='')
+aa[[1]]
+```
+
+```{r}
+tvp.gevd(fit, 37, df)
+```
+
+```{r}
+tvp.gevd.fft(fit, df, c(pi+0.00001,pi/12,0),37)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+a = rbind(c(0, .542675 ,   -20.51869  ,  1.13254,.2994862,   8.551479,    -1.456882   ),
+          c(0,  .0002655,  1.046074  ,    .0365083 ,   -.0000298 ,     -.0979714  ,-.0269302),
+          c(0, .0009359 , .2036872 ,    .9379057, -.0004211 ,   -.0001567,  -.1315299 ))
+```
+
+```{r}
+Sigma = rbind(c( 73.49842,-.00588323, -.05499874 ),
+              c( -.00588323 ,  .0029926,  .0007655  ),
+              c( -.05499874,   .0007655 , .02993189))
+```
+
+
+```{r}
+df=data.frame(t(c(1,1,1)))
+colnames(df)=c("ciamr_brdf_r","y10","y1")
+fit = list()
+fit$Beta.postmean=array(dim =c(3,7,1))
+fit$H.postmean=array(dim =c(3,3,1))
+```
+
+```{r}
+fit$Beta.postmean[,,1]=a
+fit$H.postmean[,,1]=Sigma
+fit$M=3
+```
+
+```{r}
+rr = tvp.girf(fit, 10, df)
+```
+
+```{r}
+dd = data.frame(matrix(NA,10,3))
+   dd[,1] = c(1,2,3,4,5,6,7,8,9,10)
+   dd[,2] = as.vector(rr[,,1][,'shock of ciamr_brdf_r on y10'])
+   dd[,3] = as.vector(rr[,,1][,'shock of ciamr_brdf_r on y1'])
+   colnames(dd) = c('f','response_y10','response_y1')
+
+```
+
+
+```{r}
+aa = list()
+aa[[1]]=ggplot() + 
+  geom_line(data = dd,aes(x = f,y = response_y10,color ="response_y10"),size=1)+ 
+  geom_line(data = dd,aes(x = f,y = response_y1,color="response_y1"),size=1) + 
+  geom_point(data = dd,aes(x = f,y = response_y10,shape ="response_y10"),size=2)+ 
+  geom_point(data = dd,aes(x = f,y = response_y1,shape="response_y1"),size=2) + 
+  theme_bw()+
+  theme(plot.subtitle= element_text(size=17),
+        axis.text.x = element_text(angle = 0, size = 14,hjust = 1),
+        axis.text.y = element_text(angle = 0, size = 14,hjust = 1)) +
+  labs(x='',y='',subtitle='')
+aa[[1]]
+```
+
+```{r}
+tvp.gevd(fit, 37, df)
+```
+
+```{r}
+tvp.gevd.fft(fit, df, c(pi+0.00001,pi/12,0),37)
+```
+
+
+
+
+
+
+
